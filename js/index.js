@@ -25,7 +25,14 @@ function call(fromAddr, func, ...args) {
 
     return neb.api.call(from, this.addrContract, value, nonce, gas_price, gas_limit, contract).then(function (resp) {
         console.log('result:' + resp.result);
-        document.getElementById("dataTable").innerHTML = resp.result;
+        let html = '';
+        let arrRet = JSON.parse(resp.result || []);
+        // arrRet.push(arrRet[0]);
+
+        arrRet.forEach(function (ret) {
+            html += ('<div style="margin-bottom: 10px;">恭喜' + ret.author + '用户中了' + ret.desc + '等奖</div>');
+        });
+        document.getElementById("dataTable").innerHTML = html;
         return JSON.parse(resp.result);
     }).catch(function (err) {
         console.log('error:' + err.message);
