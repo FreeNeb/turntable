@@ -103,28 +103,26 @@ $(function () {
             throw new Error('交易金额必须大于0');
         }
         let tradeNum = nebPay.call(this.addrContract, payAmount, contractFunc, JSON.stringify(contractFuncArgs), options);
-        var key = getRandom(0, 12);
-        !rotating && rotateFunc(dataObj[key], key, respObject.data.from);
-        // let intervalQuery;
-        // return new Promise((resolve, reject) => {
-        //     intervalQuery = setInterval(function () {
-        //         nebPay.queryPayInfo(tradeNum)   // search transaction result from server (result upload to server by app)
-        //             .then(function (resp) {
-        //                 let respObject = JSON.parse(resp);
-        //                 if (respObject.code === 0) {
-        //                     // 交易成功, 处理相关任务
-        //                     clearInterval(intervalQuery);    // 清除定时查询
-        //                     var key = getRandom(0, 12);
-        //                     !rotating && rotateFunc(dataObj[key], key, respObject.data.from);
-        //                 } else {
-        //                     console.log(respObject);
-        //                 }
-        //             })
-        //             .catch(function (err) {
-        //                 console.log(err);
-        //             });
-        //     }, 10001);
-        // });
+        let intervalQuery;
+        return new Promise((resolve, reject) => {
+            intervalQuery = setInterval(function () {
+                nebPay.queryPayInfo(tradeNum)   // search transaction result from server (result upload to server by app)
+                    .then(function (resp) {
+                        let respObject = JSON.parse(resp);
+                        if (respObject.code === 0) {
+                            // 交易成功, 处理相关任务
+                            clearInterval(intervalQuery);    // 清除定时查询
+                            var key = getRandom(0, 12);
+                            !rotating && rotateFunc(dataObj[key], key, respObject.data.from);
+                        } else {
+                            console.log(respObject);
+                        }
+                    })
+                    .catch(function (err) {
+                        console.log(err);
+                    });
+            }, 10001);
+        });
     };
 
 
