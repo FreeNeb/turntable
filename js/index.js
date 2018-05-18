@@ -7,10 +7,10 @@ const nebPay = new NebPay();
 
 var nodeServer = "http://localhost:9999/callFunc?func=";
 
-var addrContract = "n1sLWnmH1yEBEZs6Mf33wqKQ7tRCWH2NQ8G";
+var addrContract = "n1rEb34P2QgLdgm1b1unmy4RzX2Y15PVAdg";
 
 //pro address
-var fromAuth = 'n1cq7LaQGfGyJeB5udWuxEo6QbzruNWMuqq';
+var fromAuth = 'n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw';
 
 var __DEV__ = true;
 
