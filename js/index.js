@@ -5,16 +5,19 @@ const neb = new nebulas.Neb();
 neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
 const nebPay = new NebPay();
 
-var nodeServer = "http://localhost:8888/callFunc?func=";
+var nodeServer = "http://localhost:9999/callFunc?func=";
 
-var addrContract = "n1npZUmmKanFpjcUhTZkaTjrXjT5P3fhF22";
+var addrContract = "n1sLWnmH1yEBEZs6Mf33wqKQ7tRCWH2NQ8G";
+
+//pro address
+var fromAuth = 'n1cq7LaQGfGyJeB5udWuxEo6QbzruNWMuqq';
 
 var __DEV__ = true;
 
 function call(fromAddr, func, ...args) {
     let from = fromAddr;
     if (__DEV__) {
-        from = 'n1cq7LaQGfGyJeB5udWuxEo6QbzruNWMuqq';
+        from = fromAuth;
     }
     let value = '0';
     let nonce = '0';
@@ -86,7 +89,7 @@ $(function () {
                 } else {
                     alert("再接再厉");
                 }
-                createRewardInfo(address, type, desc);
+                createRewardInfo(address, 4, desc);
                 queryRewardList();
             }
         });
