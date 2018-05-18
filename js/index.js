@@ -121,7 +121,7 @@ $(function () {
                     .catch(function (err) {
                         console.log(err);
                     });
-            }, 5000);
+            }, 10001);
         });
     };
 
