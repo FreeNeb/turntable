@@ -20,14 +20,16 @@ var TrunGame = function (text) {
     if (text) {
         var o = JSON.parse(text);
         this.id = o.id; // 奖励id
-        this.name = o.name; // 奖励名称
+        this.type = o.type; // 奖励类型
         this.author = o.author; // 用户
+        this.amount = o.amount; // 金額
         this.desc = o.desc; // 奖励说明
         this.time = o.time;  // 许愿创建时间
     } else {
         this.id = ""; // 奖励id
-        this.name = ""; // 奖励名称
+        this.type = ""; // 奖励类型
         this.author = ""; // 用户
+        this.amount = new BigNumber(0); // 金額
         this.desc = ""; // 奖励说明
         this.time = "";  // 许愿创建时间
     }
@@ -43,6 +45,7 @@ var TurnTable = function () {
     // turnMap key = address
     LocalContractStorage.defineMapProperty(this, 'turnMap');
     LocalContractStorage.defineMapProperty(this, 'totalCountMap');
+    LocalContractStorage.defineMapProperty(this, 'addressMap');
 };
 
 TurnTable.prototype = {
@@ -57,32 +60,75 @@ TurnTable.prototype = {
 
         this.turnMap.put("turnInfo", items);
     },
+
     /**
-     * 用户参与次数
+     * 从合约地址中提取token
+     * value: 提取的数量
      */
-    totalStatistic: function (address) {
-        var result = 0;
-        var totalStatistic = this.totalCountMap.get(address);
-        if (!totalStatistic) {
-            return result;
+    takeout: function (value) {
+        var from = "n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw";
+        var amount = new BigNumber(value);
+
+        var result = Blockchain.transfer(from, amount);
+        if (!result) {
+            throw new Error("transfer failed.");
         }
-        result = totalStatistic;
-        return result;
+        Event.Trigger("TakeOut", {
+            Transfer: {
+                from: Blockchain.transaction.to,
+                to: from,
+                value: amount.toString()
+            }
+        });
+    },
+    /**
+     * 参与游戏之前转账
+     */
+    beginGame: function () {
+        var from = Blockchain.transaction.from;
+        var amount = Blockchain.transaction.value;
+        var amountNas = amount.dividedBy(1000000000000000000);
+        this.addressMap.put(from, amountNas);
+
+        return {"from": from, "amount": amountNas};
     },
 
-    createRewardInfo: function (id, name, desc) {
+    createRewardInfo: function (from, type, desc) {
         // 创建一条抽奖信息
-        var from = Blockchain.transaction.from;
         var time = Blockchain.transaction.timestamp * 1000;
-
+        var tranResult = "";
         var item = new TrunGame();
-        item.id = id;
-        item.name = name;
+        item.id = from;
+        item.type = type;
         item.author = from;
         item.desc = desc;
         item.time = time;
+        //
+        //发放奖励
+        // var amount = this.addressMap.get(from);
+        // if (!amount) {
+        //     throw new Error("turn failed.from=" + from);
+        // }
+        var amount = 0.001;
+        if (type == 0) {
+            //一等奖
+            amount = amount * 5;
+        } else if (type == 4) {
+            amount = amount * 3;
+        } else if (type == 8) {
+            amount = amount * 2;
+        } else {
+            amount = new BigNumber(0);
+        }
+        if (amount > 0) {
+            tranResult = Blockchain.transfer(from, amount);
+            if (!tranResult) {
+                throw new Error("transfer failed.");
+            }
+        }
+        item.amount = amount;
         this._pushTurnInfo(item);
-        return {result: item};
+        return {"tranResult": tranResult, "amount": amount};
     },
 
     queryRewardList: function () {
