@@ -9,8 +9,9 @@ const nebPay = new NebPay();
 var nodeServer = "http://localhost:9999/callFunc?func=";
 // var nodeServer = "http://localhost:8888/callFunc?func=";//测试
 
-var addrContract = "n1hSjHXVbURuK1T4zQ4jwFyWMi58FbAio7m"; //正式
+var addrContract = "n1jQEZjriEhdv43NCk7QkZgpz3bpPbjN8PP"; //正式
 // var addrContract = "n1qnH1N4x7iFR9BffzuxBvAyetqR7sZv3GX";//测试
+//hash = 7585f914ee848f61f4e17191899abc013202bcb2f44289cebe365eadf8bbf7d7
 
 //pro address
 var fromAuth = '';
