@@ -13,7 +13,7 @@ var addrContract = "n1hSjHXVbURuK1T4zQ4jwFyWMi58FbAio7m"; //正式
 // var addrContract = "n1qnH1N4x7iFR9BffzuxBvAyetqR7sZv3GX";//测试
 
 //pro address
-var fromAuth = 'n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw';//正式
+var fromAuth = 'n1mAUSfmACbCmzMjcJ5fnBseVbyL6ZBURep';//正式
 // var fromAuth = 'n1JSqUa3brKh2h5vSkShjN8NBUwRvSMZxsZ';//测试
 
 var __DEV__ = true;
