@@ -66,7 +66,7 @@ TurnTable.prototype = {
      * value: 提取的数量
      */
     takeout: function (value) {
-        var from = "n1JSqUa3brKh2h5vSkShjN8NBUwRvSMZxsZ";
+        var from = "n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw";
         var amount = new BigNumber(value);
 
         var result = Blockchain.transfer(from, amount);
