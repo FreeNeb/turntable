@@ -13,9 +13,7 @@ var addrContract = "n1hSjHXVbURuK1T4zQ4jwFyWMi58FbAio7m"; //正式
 // var addrContract = "n1qnH1N4x7iFR9BffzuxBvAyetqR7sZv3GX";//测试
 
 //pro address
-var fromAuth = 'n1mAUSfmACbCmzMjcJ5fnBseVbyL6ZBURep';//正式
-// var fromAuth = 'n1JSqUa3brKh2h5vSkShjN8NBUwRvSMZxsZ';//测试
-
+var fromAuth = '';
 var __DEV__ = true;
 
 function call(fromAddr, func, ...args) {
@@ -64,8 +62,31 @@ function callNodeServer(method, arg) {
     xmlReq.send();
 }
 
+/**
+ * 获取钱包地址
+ */
+function getWallectInfo(){
+    window.postMessage({
+        "target": "contentscript",
+        "data": {},
+        "method": "getAccount",
+    }, "*");
+
+    window.addEventListener('message', function (e) {
+        if (e.data && e.data.data) {
+            if (e.data.data.account) {//这就是当前钱包中的地址
+                console.log(e.data.data.account)
+                if (fromAuth=="") {
+                    fromAuth = e.data.data.account;
+                }
+            }
+        }
+    });
+}
+
 var dataObj = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
 $(function () {
+    getWallectInfo();
     queryRewardList();
     var rotating = false;
     var rotateFunc = function (num, type, address,value) {
@@ -105,6 +126,7 @@ $(function () {
         let tradeNum = nebPay.call(this.addrContract, payAmount, contractFunc, JSON.stringify(contractFuncArgs), options);
         let intervalQuery;
         return new Promise((resolve, reject) => {
+
             intervalQuery = setInterval(function () {
                 nebPay.queryPayInfo(tradeNum)   // search transaction result from server (result upload to server by app)
                     .then(function (resp) {
@@ -116,12 +138,17 @@ $(function () {
                             !rotating && rotateFunc(dataObj[key], key, respObject.data.from,respObject.data.value);
                         } else {
                             console.log(respObject);
+                            clearInterval(intervalQuery);
+                            //主网逻辑异常,转完直接计算奖励
+                            var key = getRandom(0, 12);
+                            !rotating && rotateFunc(dataObj[key], key, fromAuth,"0.001");
+
                         }
                     })
                     .catch(function (err) {
                         console.log(err);
                     });
-            }, 10001);
+            }, 5000);
         });
     };
 
