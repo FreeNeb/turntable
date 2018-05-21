@@ -93,7 +93,7 @@ TurnTable.prototype = {
         return {"from": from, "amount": amountNas};
     },
 
-    createRewardInfo: function (from, type, desc) {
+    createRewardInfo: function (from, value, type, desc) {
         // 创建一条抽奖信息
         var time = Blockchain.transaction.timestamp * 1000;
         var tranResult = "";
@@ -105,11 +105,7 @@ TurnTable.prototype = {
         item.time = time;
         //
         //发放奖励
-        // var amount = this.addressMap.get(from);
-        // if (!amount) {
-        //     throw new Error("turn failed.from=" + from);
-        // }
-        var amount = 0.001;
+        var amount = new BigNumber(value).dividedBy(1000000000000000000);
         if (type == 0) {
             //一等奖
             amount = amount * 5;
@@ -123,7 +119,7 @@ TurnTable.prototype = {
         if (amount > 0) {
             tranResult = Blockchain.transfer(from, amount);
             if (!tranResult) {
-                throw new Error("transfer failed.");
+                throw new Error("transfer failed,from=" + from + ",amount=" + amount);
             }
         }
         item.amount = amount;

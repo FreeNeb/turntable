@@ -2,23 +2,24 @@ var nebulas = require("nebulas");
 var NebPay = require("nebpay");
 
 const neb = new nebulas.Neb();
-neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+// neb.setRequest(new nebulas.HttpRequest("https://testnet.nebulas.io"));
+neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
 const nebPay = new NebPay();
 
 var nodeServer = "http://localhost:9999/callFunc?func=";
+// var nodeServer = "http://localhost:8888/callFunc?func=";//测试
 
-var addrContract = "n1rEb34P2QgLdgm1b1unmy4RzX2Y15PVAdg";
+var addrContract = "n1hSjHXVbURuK1T4zQ4jwFyWMi58FbAio7m"; //正式
+// var addrContract = "n1qnH1N4x7iFR9BffzuxBvAyetqR7sZv3GX";//测试
 
 //pro address
-var fromAuth = 'n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw';
+var fromAuth = 'n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw';//正式
+// var fromAuth = 'n1JSqUa3brKh2h5vSkShjN8NBUwRvSMZxsZ';//测试
 
 var __DEV__ = true;
 
 function call(fromAddr, func, ...args) {
     let from = fromAddr;
-    if (__DEV__) {
-        from = fromAuth;
-    }
     let value = '0';
     let nonce = '0';
     let gas_price = '1000000';
@@ -47,11 +48,11 @@ function call(fromAddr, func, ...args) {
 
 
 function queryRewardList() {
-    call("", "queryRewardList");
+    call(fromAuth, "queryRewardList");
 }
 
-function createRewardInfo(id, type, desc) {
-    var arg = {to: addrContract, id: id, type: type, desc: desc};
+function createRewardInfo(from,value, type, desc) {
+    var arg = {to: addrContract, form:from,value:value, type: type, desc: desc};
     callNodeServer("createRewardInfo", arg);
 }
 
@@ -67,7 +68,7 @@ var dataObj = [0, 30, 60, 90, 120, 150, 180, 210, 240, 270, 300, 330];
 $(function () {
     queryRewardList();
     var rotating = false;
-    var rotateFunc = function (num, type, address) {
+    var rotateFunc = function (num, type, address,value) {
         rotating = true;
         $("#outer").rotate({
             angle: 0,
@@ -75,7 +76,6 @@ $(function () {
             animateTo: num + 1440, //1440是我要让指针旋转4圈
             callback: function () {
                 rotating = false;
-                var name = "再接再厉";
                 var desc = "未中奖";
                 if (type == 0) {
                     desc = "一等奖0.005nas";
@@ -89,7 +89,7 @@ $(function () {
                 } else {
                     alert("再接再厉");
                 }
-                createRewardInfo(address, 4, desc);
+                createRewardInfo(address,value, type, desc);
                 queryRewardList();
             }
         });
@@ -113,7 +113,7 @@ $(function () {
                             // 交易成功, 处理相关任务
                             clearInterval(intervalQuery);    // 清除定时查询
                             var key = getRandom(0, 12);
-                            !rotating && rotateFunc(dataObj[key], key, respObject.data.from);
+                            !rotating && rotateFunc(dataObj[key], key, respObject.data.from,respObject.data.value);
                         } else {
                             console.log(respObject);
                         }
