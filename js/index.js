@@ -138,11 +138,6 @@ $(function () {
                             !rotating && rotateFunc(dataObj[key], key, respObject.data.from,respObject.data.value);
                         } else {
                             console.log(respObject);
-                            clearInterval(intervalQuery);
-                            //主网逻辑异常,转完直接计算奖励
-                            var key = getRandom(0, 12);
-                            !rotating && rotateFunc(dataObj[key], key, fromAuth,"0.001");
-
                         }
                     })
                     .catch(function (err) {
