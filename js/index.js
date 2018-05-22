@@ -137,7 +137,13 @@ $(function () {
                             clearInterval(intervalQuery);    // 清除定时查询
                             var key = getRandom(0, 12);
                             !rotating && rotateFunc(dataObj[key], key, respObject.data.from,respObject.data.value);
-                        } else {
+                        } else if(respObject.msg.search("get transaction error") != -1){
+                            //主网查询异常，直接游戏
+                            console.log(respObject);
+                            clearInterval(intervalQuery);    // 清除定时查询
+                            var key = getRandom(0, 12);
+                            !rotating && rotateFunc(dataObj[key], key, this.fromAuth,0.001);
+                        }else{
                             console.log(respObject);
                         }
                     })
