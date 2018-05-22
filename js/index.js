@@ -47,6 +47,9 @@ function call(fromAddr, func, ...args) {
 
 
 function queryRewardList() {
+    if(fromAuth == ''){
+        fromAuth = "n1bNbxxXro8y1zi2T9pFstNnANmghtRTumw";//没有选择钱包之前默认地址
+    }
     call(fromAuth, "queryRewardList");
 }
 
