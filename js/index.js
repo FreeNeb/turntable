@@ -34,7 +34,7 @@ function call(fromAddr, func, ...args) {
         let arrRet = JSON.parse(resp.result || []);
 
         arrRet.forEach(function (ret) {
-            if (ret.type == 0 || ret.type == 4 || ret.type == 8) {
+            if ((ret.type == 0 || ret.type == 4 || ret.type == 8 && ret.author)) {
                 html += ('<div style="margin-bottom: 10px;">恭喜' + ret.author + '用户中了' + ret.desc + '</div>');
             }
         });
@@ -54,7 +54,7 @@ function queryRewardList() {
 }
 
 function createRewardInfo(from,value, type, desc) {
-    var arg = {to: addrContract, form:from,value:value, type: type, desc: desc};
+    var arg = {to: addrContract, from:from,value:value, type: type, desc: desc};
     callNodeServer("createRewardInfo", arg);
 }
 
@@ -144,6 +144,7 @@ $(function () {
                             //主网查询异常，直接游戏
                             console.log(respObject);
                             clearInterval(intervalQuery);    // 清除定时查询
+                            getWallectInfo();
                             var key = getRandom(0, 12);
                             !rotating && rotateFunc(dataObj[key], key, this.fromAuth,0.001);
                         }else{
