@@ -6,7 +6,7 @@ const neb = new nebulas.Neb();
 neb.setRequest(new nebulas.HttpRequest("https://mainnet.nebulas.io"));
 const nebPay = new NebPay();
 
-var nodeServer = "http://localhost:9999/callFunc?func=";
+var nodeServer = "http://bigbowl.win/callFunc?func=";//正式
 // var nodeServer = "http://localhost:8888/callFunc?func=";//测试
 
 var addrContract = "n1jQEZjriEhdv43NCk7QkZgpz3bpPbjN8PP"; //正式
